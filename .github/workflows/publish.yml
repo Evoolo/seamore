@@ -1,0 +1,77 @@
+name: Build and publish Sea More
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out published repository
+        uses: actions/checkout@v4
+        with:
+          path: published
+
+      - name: Check out website source
+        uses: actions/checkout@v4
+        with:
+          repository: Evoolo/seamore-website
+          ref: main
+          path: source
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: source
+
+      - name: Build static website
+        run: npm run build
+        working-directory: source
+        env:
+          NEXT_PUBLIC_BASE_PATH: /seamore
+          NEXT_PUBLIC_SITE_URL: https://evoolo.github.io/seamore
+
+      - name: Save rendered pages in this repository
+        run: |
+          rm -rf published/site
+          mkdir -p published/site
+          cp -a source/out/. published/site/
+          touch published/site/.nojekyll
+          git -C source rev-parse HEAD > published/.source-commit
+          git -C published config user.name "github-actions[bot]"
+          git -C published config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C published add site .source-commit
+          if ! git -C published diff --cached --quiet; then
+            git -C published commit -m "Render website from $(cut -c1-7 published/.source-commit)"
+            git -C published push
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: published/site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
