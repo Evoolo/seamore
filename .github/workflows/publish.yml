@@ -59,24 +59,23 @@ jobs:
 
       - name: Save rendered pages in this repository
         run: |
-          rm -rf published/site
-          mkdir -p published/site
-          cp -a source/out/. published/site/
-          touch published/site/.nojekyll
-          git -C source rev-parse HEAD > published/.source-commit
           git -C published config user.name "github-actions[bot]"
           git -C published config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git -C published add site .source-commit
-          if ! git -C published diff --cached --quiet; then
+          for attempt in 1 2 3; do
+            git -C published fetch origin main
+            git -C published reset --hard origin/main
+            rm -rf published/site
+            mkdir -p published/site
+            cp -a source/out/. published/site/
+            touch published/site/.nojekyll
+            git -C source rev-parse HEAD > published/.source-commit
+            git -C published add site .source-commit
+            if git -C published diff --cached --quiet; then break; fi
             git -C published commit -m "Render website from $(cut -c1-7 published/.source-commit)"
-            for attempt in 1 2 3; do
-              git -C published fetch origin main
-              git -C published rebase origin/main
-              if git -C published push origin HEAD:main; then exit 0; fi
-              sleep 2
-            done
-            exit 1
-          fi
+            if git -C published push origin HEAD:main; then break; fi
+            if [ "$attempt" -eq 3 ]; then exit 1; fi
+            sleep 2
+          done
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
