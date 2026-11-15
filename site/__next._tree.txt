@@ -12,4 +12,4 @@
 :HL["/seamore/_next/static/media/d7cc781f889325b8-s.p.1d4i5iktl1egg.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/seamore/_next/static/media/ee39438b855ed712-s.p.3ao_lmqnh97f7.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 1:[["children",{"s":"__PAGE__","h":160}]]
-0:{"b":"t97MW-DVDXlH0SY3YDL8c","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"krCqPKzaFyfdebJ5bth7y","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
