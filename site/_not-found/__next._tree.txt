@@ -1,4 +1,4 @@
-:HL["/seamore/_next/static/chunks/1n7cvk2b3oq_m.css","style"]
+:HL["/seamore/_next/static/chunks/32r19310qca-2.css","style"]
 2:[["children",{"s":"__PAGE__","h":160}]]
 1:[["children",{"s":"/_not-found","h":96,"c":"$Q2"}]]
-0:{"b":"AIuiKLeUe2yH5KCaYbslY","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"6-pY6KqHHfsbOcCguRKIR","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
