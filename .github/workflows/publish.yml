@@ -69,7 +69,13 @@ jobs:
           git -C published add site .source-commit
           if ! git -C published diff --cached --quiet; then
             git -C published commit -m "Render website from $(cut -c1-7 published/.source-commit)"
-            git -C published push
+            for attempt in 1 2 3; do
+              git -C published fetch origin main
+              git -C published rebase origin/main
+              if git -C published push origin HEAD:main; then exit 0; fi
+              sleep 2
+            done
+            exit 1
           fi
 
       - name: Upload Pages artifact
