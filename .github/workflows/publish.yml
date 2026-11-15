@@ -2,8 +2,13 @@ name: Build and publish Sea More
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .pending-source-commit
+      - .github/workflows/publish.yml
   schedule:
-    - cron: "17 * * * *"
+    - cron: "17 3 * * *"
 
 permissions:
   contents: write
